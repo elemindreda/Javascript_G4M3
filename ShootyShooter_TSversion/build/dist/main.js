@@ -1,8 +1,10 @@
-import gsap from 'gsap';
+import gsap from '../_snowpack/pkg/gsap.js';
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
 const startGameBTN = document.querySelector('#startGameBTN');
-const bannerEl = document.querySelector('#bannerEl');
+const restartGameBTN = document.querySelector('#restartGameBTN');
+const startbannerEl = document.querySelector('#startbannerEl');
+const restartbannerEl = document.querySelector('#restartbannerEl');
 const scoreEl = document.querySelector('#scoreEl');
 const bigscoreEl = document.querySelector('#bigscoreEl');
 const friction = 0.98;
@@ -152,7 +154,7 @@ function animate() {
         const playerEnemyDist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
         if (playerEnemyDist - player.radius - enemy.radius < 1) {
             cancelAnimationFrame(animationId);
-            bannerEl.style.display = 'flex';
+            restartbannerEl.style.display = 'flex';
             bigscoreEl.innerHTML = score;
         }
         //check if projectile has hit our enemy
@@ -189,8 +191,6 @@ function animate() {
         });
     });
 }
-const x = canvas.width / 2;
-const y = canvas.height / 2;
 let player = new Player(canvas.width / 2, canvas.height / 2, 20, 'white');
 let animationId;
 let projectiles = [];
@@ -211,5 +211,10 @@ startGameBTN.addEventListener("click", () => {
     init();
     spawnEnemies(),
         animate(),
-        bannerEl.style.display = 'none';
+        startbannerEl.style.display = 'none';
+});
+restartGameBTN.addEventListener("click", () => {
+    init();
+    animate(),
+        restartbannerEl.style.display = 'none';
 });

@@ -11,21 +11,33 @@
         margin: 0;
         background: black;
     }
+    #restartbannerEl{
+        display:none
+    }
 </style>
 <body>
     <div class = "fixed text-white text-sm ml-2 mt-1 select-none">
         <span>Score: </span><span id = "scoreEl">0</span>
     </div>
 
-    <div class = "fixed inset-0 flex items-center justify-center" id = "bannerEl">
+    <div class = "fixed inset-0 flex items-center justify-center" id = "restartbannerEl">
         <div class = "bg-white max-w-md w-full p-6 text-center">
             <h1 class = "text-4xl font-bold leading-none" id = "bigscoreEl">0</h1>
             <p class = "text-sm test-gray-700 mb-4">Points</p>
+            <div>
+                <button class = "bg-blue-500 text-white w-full py-3 rounded-full text-sm" id = "restartGameBTN">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <div class = "fixed inset-0 flex items-center justify-center" id = "startbannerEl">
+        <div class = "bg-white max-w-md w-full p-6 text-center">
             <div>
                 <button class = "bg-blue-500 text-white w-full py-3 rounded-full text-sm" id = "startGameBTN">Start Game</button>
             </div>
         </div>
     </div>
+
     <canvas></canvas>
     <script type = "module" src="./dist/main.js"></script>
 </body>

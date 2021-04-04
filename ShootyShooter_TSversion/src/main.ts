@@ -1,12 +1,14 @@
 import gsap from 'gsap'
 
 
-const canvas = document. querySelector('canvas')
-const c = canvas.getContext('2d')
-const startGameBTN = document.querySelector('#startGameBTN') as HTMLInputElement
-const bannerEl = document.querySelector('#bannerEl') as HTMLInputElement
-const scoreEl = document.querySelector('#scoreEl') as HTMLInputElement
-const bigscoreEl = document.querySelector('#bigscoreEl') as HTMLInputElement
+const canvas = document.querySelector('canvas');
+const c = canvas.getContext('2d');
+const startGameBTN = document.querySelector('#startGameBTN') as HTMLInputElement;
+const restartGameBTN = document.querySelector('#restartGameBTN') as HTMLInputElement;
+const startbannerEl = document.querySelector('#startbannerEl') as HTMLInputElement;
+const restartbannerEl = document.querySelector('#restartbannerEl') as HTMLInputElement;
+const scoreEl = document.querySelector('#scoreEl') as HTMLInputElement;
+const bigscoreEl = document.querySelector('#bigscoreEl') as HTMLInputElement;
 const friction:number = 0.98
 interface IVelocity{
     x:number;
@@ -210,8 +212,8 @@ function animate(){
         const playerEnemyDist:number = Math.hypot (player.x - enemy.x, player.y - enemy.y)
         if (playerEnemyDist - player.radius - enemy.radius < 1){
             cancelAnimationFrame(animationId)
-            bannerEl.style.display = 'flex'
-            bigscoreEl.innerHTML = score as unknown as string
+            restartbannerEl.style.display = 'flex';
+            bigscoreEl.innerHTML = score as unknown as string;
         }
 
         //check if projectile has hit our enemy
@@ -257,10 +259,6 @@ function animate(){
     })
 }
 
-
-const x = canvas.width / 2
-const y = canvas.height / 2
-
 let player = new Player(canvas.width/2, canvas.height/2,20,'white')
 let animationId
 let projectiles = []
@@ -280,9 +278,15 @@ function init(){
     bigscoreEl.innerHTML = score as unknown as string
 }
 
-startGameBTN.addEventListener("click", () =>{
-    init()
+startGameBTN.addEventListener("click", () => {
+    init();
     spawnEnemies(),
     animate(),
-    bannerEl.style.display = 'none'
-}) 
+    startbannerEl.style.display = 'none';
+});
+
+restartGameBTN.addEventListener("click", () => {
+    init();
+    animate(),
+    restartbannerEl.style.display = 'none';
+});

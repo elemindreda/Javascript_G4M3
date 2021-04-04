@@ -2,15 +2,17 @@ import gsap from "../_snowpack/pkg/gsap.js";
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 const startGameBTN = document.querySelector("#startGameBTN");
-const bannerEl = document.querySelector("#bannerEl");
+const restartGameBTN = document.querySelector("#restartGameBTN");
+const startbannerEl = document.querySelector("#startbannerEl");
+const restartbannerEl = document.querySelector("#restartbannerEl");
 const scoreEl = document.querySelector("#scoreEl");
 const bigscoreEl = document.querySelector("#bigscoreEl");
 const friction = 0.98;
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 class Player {
-  constructor(x2, y2, radius, color) {
-    this.x = x2, this.y = y2, this.radius = radius, this.color = color;
+  constructor(x, y, radius, color) {
+    this.x = x, this.y = y, this.radius = radius, this.color = color;
   }
   draw() {
     c.beginPath();
@@ -20,9 +22,9 @@ class Player {
   }
 }
 class Projectile {
-  constructor(x2, y2, radius, color, velocity) {
-    this.x = x2;
-    this.y = y2;
+  constructor(x, y, radius, color, velocity) {
+    this.x = x;
+    this.y = y;
     this.radius = radius;
     this.color = color;
     this.velocity = velocity;
@@ -40,9 +42,9 @@ class Projectile {
   }
 }
 class Enemy {
-  constructor(x2, y2, radius, color, velocity) {
-    this.x = x2;
-    this.y = y2;
+  constructor(x, y, radius, color, velocity) {
+    this.x = x;
+    this.y = y;
     this.radius = radius;
     this.color = color;
     this.velocity = velocity;
@@ -60,13 +62,13 @@ class Enemy {
   }
 }
 class Particle {
-  constructor(x2, y2, radius, color, velocity) {
-    this.x = x2;
-    this.y = y2;
+  constructor(x, y, radius, color, velocity) {
+    this.x = x;
+    this.y = y;
     this.radius = radius;
     this.color = color;
     this.velocity = velocity;
-    this.alpha;
+    this.alpha = 1;
   }
   draw() {
     c.save();
@@ -137,7 +139,7 @@ function animate() {
     const playerEnemyDist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
     if (playerEnemyDist - player.radius - enemy.radius < 1) {
       cancelAnimationFrame(animationId);
-      bannerEl.style.display = "flex";
+      restartbannerEl.style.display = "flex";
       bigscoreEl.innerHTML = score;
     }
     projectiles.forEach((projectile, projectileindex) => {
@@ -170,8 +172,6 @@ function animate() {
     });
   });
 }
-const x = canvas.width / 2;
-const y = canvas.height / 2;
 let player = new Player(canvas.width / 2, canvas.height / 2, 20, "white");
 let animationId;
 let projectiles = [];
@@ -190,5 +190,9 @@ function init() {
 }
 startGameBTN.addEventListener("click", () => {
   init();
-  spawnEnemies(), animate(), bannerEl.style.display = "none";
+  spawnEnemies(), animate(), startbannerEl.style.display = "none";
+});
+restartGameBTN.addEventListener("click", () => {
+  init();
+  animate(), restartbannerEl.style.display = "none";
 });
