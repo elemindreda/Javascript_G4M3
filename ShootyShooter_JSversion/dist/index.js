@@ -123,7 +123,6 @@ window.addEventListener('click', (event) => {
     }));
 });
 function animate() {
-    console.log(enemies)
     animationId = requestAnimationFrame(animate);
     // refill the screen so you draw over the screen once objects are updated
     c.fillStyle = 'rgba(0, 0, 0, 0.1)';
