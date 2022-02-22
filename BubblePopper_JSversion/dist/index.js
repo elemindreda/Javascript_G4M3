@@ -4,6 +4,16 @@ const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 500;
 
+let particleArray = [];
+window.addEventListener('mousemove', function(event){
+    mouse.xmove = event.x - canvasPosition.left;
+    mouse.ymove = event.y - canvasPosition.top;
+    // console.log('x = ', mouse.xmove, 'y = ', mouse.ymove)
+})
+
+// adjust the bubble popper particle effect location
+let adjustX = 7;
+let adjustY = -20;
 
 let score = 0;
 let gameFrame = 0;
@@ -15,7 +25,10 @@ let canvasPosition = canvas.getBoundingClientRect();
 const mouse = {
     x: canvas.width/2,
     y: canvas.height/2,
-    click:false
+    click:false,
+    xmove: null,
+    ymove: null,
+    radius: 100
 }
 
 
@@ -35,6 +48,7 @@ canvas.addEventListener('mouseup', function(){
     mouse.click = false;
 })
 
+
 //Player
 class Player{
     constructor(){
@@ -44,7 +58,10 @@ class Player{
         this.angle = 0;
         this.frameX = 0;
         this.frameY = 0;
-        this.frame = 0;
+
+        //Count rows & columns in the sprite sheet (start from 0)
+        this.maxSpriteRow = 2
+        this.maxSpriteColumn = 3
         this.spriteWidth = 498;
         this.spriteHeight = 327;
     }
@@ -59,6 +76,13 @@ class Player{
         if (mouse.y != this.y){
             this.y -= dy/20;
         }
+
+        //Every 10 gameFrames change the image drawn on the sprite sheet.
+        if (gameFrame % 10 == 0){
+            if (this.frameX >= this.maxSpriteColumn) {this.frameX = 0; this.frameY++;}
+            else { this.frameX++}
+            if (this.frameY > this.maxSpriteRow) {this.frameY = 0;}
+        }
     }
     draw(){
         if (mouse.click){
@@ -68,34 +92,31 @@ class Player{
             ctx.stroke();
         }
         ctx.fillStyle = 'clear';
-        // ctx.beginPath();
-        // // ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-        // ctx.fill();
-        // ctx.closePath();
-        // ctx.fillRect(this.x, this.y, this.radius, 10)
 
-        //if Fish is moving Left
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle)
-        
+
         if (this.x < mouse.x){
             ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, 
                 this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth/4, this.spriteHeight/4)
-        } else {
+        } else if (this.x > mouse.y){
             ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, 
                 this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth/4, this.spriteHeight/4)
-        }
+        }else{ctx.drawImage(playerIdle, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, 
+            this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth/4, this.spriteHeight/4)}
         
         ctx.restore();
     }
 }
 
-    //deckare Player image Asset
-    const playerLeft = new Image();
-    playerLeft.src = './Assets/Images/fish_swim_left.png';
-    const playerRight = new Image();
-    playerRight.src = './Assets/Images/fish_swim_right.png';
+//deckare Player image Asset
+const playerLeft = new Image();
+playerLeft.src = './Assets/Images/fish_swim_left.png';
+const playerRight = new Image();
+playerRight.src = './Assets/Images/fish_swim_right.png';
+const playerIdle = new Image();
+playerIdle.src = './Assets/Images/fish_idle.png'
 
 const player = new Player();
 
@@ -141,19 +162,28 @@ class BubblesEffects {
         this.x = x
         this.y = y;
         this.velocity = velocity
+
+        this.frameX = 0;
+        this.frameY = 0;
+        this.endAnimation = false;
+        //Count rows & columns in the sprite sheet (start from 0)
+        this.maxSpriteRow = 2
+        this.maxSpriteColumn = 3
+        this.spriteWidth = 393.75;
+        this.spriteHeight = 511.5;
     }
     update(){
         this.y -= this.velocity;
-
+        //Every 10 gameFrames change the image drawn on the sprite sheet.
+        if (gameFrame % 10 == 0){
+            if (this.frameX >= this.maxSpriteColumn) {this.frameX = 0; this.frameY++;}
+            else if (this.endAnimation == false){this.frameX++;}
+            if (this.frameX == 4 && this.frameY == 1){this.endAnimation = true}
+        }
     }
     draw(){
-        // ctx.fillStyle = 'blue';
-        // ctx.beginPath();
-        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        // ctx.fill();
-        // ctx.closePath();
-        // ctx.stroke();
-        ctx.drawImage(bubblePoppedImage, this.x-65, this.y-65, this.radius * 2.6, this.radius*3)
+        ctx.drawImage(bubblePoppedImage, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, 
+            this.spriteWidth, this.spriteHeight, this.x - 60, this.y - 45, this.spriteWidth/4, this.spriteHeight/4)
     }
 }
 
@@ -191,7 +221,7 @@ function spawnBubbles(){
         //remove bubble if collides with player
         if (bubble.distance < bubble.radius + player.radius){
             // create new bubble effects when bubble is popped
-            bubblesEffects.push(new BubblesEffects(bubble.x, bubble.y, bubble.velocity))
+            bubblesEffects.push(new BubblesEffects(bubble.x, bubble.y, 4))
 
             if (bubble.sound == 'sound1'){
                 bubblePopSound1.play();
@@ -247,7 +277,10 @@ class Enemy {
         this.angle = 0;
         this.frameX = 0;
         this.frameY = 0;
-        this.frame = 0;
+
+        //Count rows & columns in the sprite sheet (start from 0)
+        this.maxSpriteRow = 0
+        this.maxSpriteColumn = 5
         this.spriteWidth = 256;
         this.spriteHeight = 256;
     }
@@ -257,20 +290,14 @@ class Enemy {
         const dx = this.x - player.x;
         const dy = this.y - player.y;
         this.distance = Math.hypot(dx, dy)
+        //Every 10 gameFrames change the image drawn on the sprite sheet.
+        if (gameFrame % 10 == 0){
+            if (this.frameX >= this.maxSpriteColumn) {this.frameX = 0; this.frameY++;}
+            else{this.frameX++}
+            if (this.frameY > this.maxSpriteRow) this.frameY = 0;
+        }
     }
     draw(){
-        // ctx.fillStyle = 'red';
-        // ctx.beginPath();
-        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        // ctx.fill();
-        // ctx.closePath();
-        // ctx.stroke();
-        
-
-////////////////////////////////////////////////
-//// Figure out how to do Sprite Animation ////
-//////////////////////////////////////////////
-
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle)
@@ -289,7 +316,7 @@ class Enemy {
 function spawnEnemies(){
     if (gameFrame % 500 == 0 ){
         enemiesArray.push(new Enemy());
-        console.log(enemiesArray)
+        // console.log(enemiesArray)
     }
     enemiesArray.forEach((enemy, index) =>{
         // console.log(enemy.x)
@@ -305,11 +332,56 @@ function spawnEnemies(){
         
     })
 
-    // console.log(enemiesArray)
-    // enemiesArray.forEach((enemy, index) => {
-    //     enemy.update()
-    //     enemy.draw()
-    // })
+}
+
+const particleImage = new Image();
+particleImage.src = './Assets/Images/bubble_pop_frame_01.png'
+
+class Particle {
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+        
+        this.size = 10;
+        this.baseX = this.x;
+        this.baseY = this.y;
+
+        this.density = (Math.random() * 30) + 1;
+    }
+    draw(){
+        ctx.drawImage(particleImage, this.x, this.y, this.size, this.size)
+    }
+    update(){
+        let dx = mouse.xmove - this.x;
+        let dy = mouse.ymove - this.y;
+        let dist = Math.hypot(dx, dy);
+        let forceDirectionX = dx / dist;
+        let forceDirectionY = dy / dist;
+        let maxDist = mouse.radius;
+        let force = (maxDist - dist) / maxDist;
+        let directionX = forceDirectionX * force * this.density;
+        let directionY = forceDirectionY * force * this.density;
+        if (dist < mouse.radius){
+            this.x -= directionX;
+            this.y -= directionY;
+        } else {
+            if (this.x !== this.baseX){
+                let dx = this.x - this.baseX;
+                this.x -= dx/10;
+            } if (this.y !== this.baseY){
+                let dy = this.y - this.baseY;
+                this.y -= dy/10;
+            }
+        }
+    }
+}
+
+function spawnParticles(){
+    particleArray.forEach((particle) => {
+        particle.draw();
+        particle.update();
+    })
+
 }
 
 
@@ -319,14 +391,37 @@ function animate(){
     drawBackground();
     spawnBubbles();
     spawnEnemies();
+
     player.update();
     player.draw();
+    ctx.font = '50px Georgia'
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 10, 50);
+
+    spawnParticles();
+
+    //add gameframes to enable animations across frames
     gameFrame++;
     animation = requestAnimationFrame(animate);
 }
 
+function init(){
 
+    ctx.fillStyle = 'white';
+    ctx.font = '10px Georgia';
+    ctx.fillText('Bubble Popper', 300, 250);
+    const textCoordinates = ctx.getImageData(300,200,325,75);
+
+    for (let y = 0, y2 = textCoordinates.height; y < y2; y++){
+        for (let x = 0, x2 = textCoordinates.width; x < x2; x++){
+            if (textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128){
+                let positionX = x + adjustX;
+                let positionY = y + adjustY;
+                particleArray.push(new Particle(positionX * 10, positionY * 10));
+            }
+        }
+    }
+}
 
 animate();
+init();

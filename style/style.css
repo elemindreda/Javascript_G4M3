@@ -1,0 +1,174 @@
+body {
+	padding: 80px;
+	background: #f1f1f1;
+}
+
+/* Header/Blog Title */
+.header {
+	padding: 30px;
+	font-size: 40px;
+	text-align: center;
+	background: white;
+}
+.navBar {
+	height: 50px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+.subMenu {
+	height: 50px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#codeBranch {
+	font-size: 50px;
+	vertical-align: center;
+	margin: 10px;
+	margin-left: auto;
+	opacity: 0.4;
+}
+
+#codeBranch:hover {
+	opacity: 1;
+	transition: opacity 0.5s;
+}
+
+.darkmode {
+	width: 50px;
+	height: 50px;
+	margin: 10px;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+.glow-on-hover {
+	vertical-align: middle;
+	width: 120px;
+	height: 60px;
+	border: none;
+	outline: none;
+	color: #fff;
+	background: #aaa;
+	cursor: pointer;
+	position: relative;
+	z-index: 0;
+	border-radius: 10px;
+	margin: 10px;
+}
+
+.glow-on-hover:before {
+	content: "";
+	background: linear-gradient(
+		45deg,
+		#ff0000,
+		#ff7300,
+		#fffb00,
+		#48ff00,
+		#00ffd5,
+		#002bff,
+		#7a00ff,
+		#ff00c8,
+		#ff0000
+	);
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	background-size: 400%;
+	z-index: -1;
+	filter: blur(5px);
+	width: calc(100% + 4px);
+	height: calc(100% + 4px);
+	animation: glowing 20s linear infinite;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+	border-radius: 10px;
+}
+
+.glow-on-hover:active {
+	color: #000;
+}
+
+.glow-on-hover:active:after {
+	background: transparent;
+}
+
+.glow-on-hover:hover:before {
+	opacity: 1;
+}
+
+.glow-on-hover:after {
+	z-index: -1;
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #aaa;
+	left: 0;
+	top: 0;
+	border-radius: 10px;
+}
+
+@keyframes glowing {
+	0% {
+		background-position: 0 0;
+	}
+	50% {
+		background-position: 400% 0;
+	}
+	100% {
+		background-position: 0 0;
+	}
+}
+
+.footer {
+	text-align: center;
+}
+
+/* Fake image */
+.fakeimg {
+	background-color: #aaa;
+	width: 100%;
+	height: 400px;
+}
+
+/* Add a card effect for articles */
+.card {
+	background-color: white;
+	box-sizing: border-box;
+	height: 800px;
+	width: 100%;
+	padding: 20px;
+	margin-top: 20px;
+	/* margin-right: 60px; */
+}
+
+/* Clear floats after the columns */
+.container {
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	/* display: flex; */
+	display: grid;
+	grid-template-columns: repeat(4, minmax(400px, 400px));
+}
+
+.container :first-child {
+	grid-column: 1 / -1;
+}
+.container :last-child {
+	grid-column: 1 / -1;
+}
+
+@media only screen and (max-width: 1600px) {
+	.container {
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		/* display: flex; */
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(400px, 400px));
+	}
+}
