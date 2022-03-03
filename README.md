@@ -1,2 +1,6 @@
-# Javascript_G4M3
-javascript games made in vanilla javascript :)
+# G4M35
+
+Update- Not only Javascript games :)
+<br />
+
+~~javascript games made in vanilla javascript :)~~
